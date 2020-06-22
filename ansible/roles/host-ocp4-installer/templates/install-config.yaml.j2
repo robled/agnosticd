@@ -57,12 +57,12 @@ compute:
   replicas: {{ worker_instance_count }}
 networking:
   clusterNetwork:
-  - cidr: 10.128.0.0/14
+  - cidr: 192.128.0.0/14
     hostPrefix: 23
-  machineCIDR: 10.0.0.0/16
+  machineCIDR: 192.168.0.0/16
+  networkType: OpenShiftSDN
   serviceNetwork:
-  - 172.30.0.0/16
-  networkType: OpenshiftSDN
+  - 172.16.0.0/16
 platform:
 {% if cloud_provider == 'ec2' %}
   aws:
@@ -85,13 +85,14 @@ platform:
   openstack:
     cloud: {{ osp_cloud_name }}
     computeFlavor: {{ worker_instance_type }}
-    externalNetwork: external
+#   externalDNS: null
+    externalNetwork: provider_net_cci_6
     lbFloatingIP: {{ hostvars.localhost.ocp_api_fip }}
-    octaviaSupport: "1"
+    octaviaSupport: "0"
     region: ""
-    trunkSupport: "0"
+    trunkSupport: "1"
 {% if rhcos_image_name is defined %}
-    clusterOSImage: {{ rhcos_image_name }}
+#   clusterOSImage: {{ rhcos_image_name }}
 {% endif %}
 {% endif %}
 pullSecret: '{{ ocp4_pull_secret |  replace("'",'"') }}'
